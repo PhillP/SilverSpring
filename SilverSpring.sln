@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Web Developer Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverSpring.Application", "SilverSpring.Application\SilverSpring.Application.csproj", "{B8666EF4-8913-4E24-8F50-D1FC9468986E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverSpring.Web", "SilverSpring.Web\SilverSpring.Web.csproj", "{9DD5BD3B-3788-4EBB-B08D-E8A68B93D96B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverSpring", "SilverSpring\SilverSpring.csproj", "{5B7A4F0A-47A7-43F1-B18E-90026CFE5FD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverSpring.Controls", "SilverSpring.Controls\SilverSpring.Controls.csproj", "{453F31EE-0D63-460D-B18A-B2A0FCC39E34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B8666EF4-8913-4E24-8F50-D1FC9468986E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8666EF4-8913-4E24-8F50-D1FC9468986E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8666EF4-8913-4E24-8F50-D1FC9468986E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8666EF4-8913-4E24-8F50-D1FC9468986E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DD5BD3B-3788-4EBB-B08D-E8A68B93D96B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DD5BD3B-3788-4EBB-B08D-E8A68B93D96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DD5BD3B-3788-4EBB-B08D-E8A68B93D96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DD5BD3B-3788-4EBB-B08D-E8A68B93D96B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B7A4F0A-47A7-43F1-B18E-90026CFE5FD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B7A4F0A-47A7-43F1-B18E-90026CFE5FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B7A4F0A-47A7-43F1-B18E-90026CFE5FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B7A4F0A-47A7-43F1-B18E-90026CFE5FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{453F31EE-0D63-460D-B18A-B2A0FCC39E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453F31EE-0D63-460D-B18A-B2A0FCC39E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453F31EE-0D63-460D-B18A-B2A0FCC39E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453F31EE-0D63-460D-B18A-B2A0FCC39E34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

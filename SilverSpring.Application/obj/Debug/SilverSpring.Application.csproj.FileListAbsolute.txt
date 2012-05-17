@@ -1,0 +1,16 @@
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\App.g.i.cs
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\MainPage.g.i.cs
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\SilverSpring.Application.g.resources
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.Application.dll
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.Application.pdb
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\AppManifest.xaml
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.Application.xap
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.ApplicationTestPage.html
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.Controls.dll
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.dll
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.Controls.pdb
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\Bin\Debug\SilverSpring.pdb
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\SilverSpring.Application.dll
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\SilverSpring.Application.pdb
+C:\Users\Phill\documents\visual studio 2010\Projects\SilverSpring\SilverSpring.Application\obj\Debug\XapCacheFile.xml

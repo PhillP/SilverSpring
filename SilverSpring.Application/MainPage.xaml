@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="SilverSpring.Application.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:silver="clr-namespace:SilverSpring.Controls;assembly=SilverSpring.Controls"
+    d:DesignHeight="300" d:DesignWidth="400">
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.Resources>
+            <Style x:Key="nodeBorderStyle" TargetType="Border">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush>
+                            <GradientStop Color="LightBlue" Offset="0"/>
+                            <GradientStop Color="LightGray" Offset="0.9"/>
+                            <GradientStop Color="Gray" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Padding" Value="2"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Content="Run" Grid.Row="0" HorizontalAlignment="Left" Click="runClick"></Button>
+        <silver:SilverSpringCanvas x:Name="silverSpringCanvas" Grid.Row="1" Margin="30" MaxWidth="450" MaxHeight="450">
+            <Border x:Name="perthNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Perth"></TextBlock>
+            </Border>
+
+            <Border x:Name="sydneyNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Sydney"></TextBlock>
+            </Border>
+            <Border x:Name="melbourneNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Melbourne"></TextBlock>
+            </Border>
+            <Border x:Name="brisbaneNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Brisbane"></TextBlock>
+            </Border>
+            <Border x:Name="adelaideNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Adelaide"></TextBlock>
+            </Border>
+            <Border x:Name="hobartNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Hobart"></TextBlock>
+            </Border>
+            <Border x:Name="launcestonNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Launceston"></TextBlock>
+            </Border>
+            <Border x:Name="darwinNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Darwin"></TextBlock>
+            </Border>
+            <Border x:Name="rockhamptonNode" Style="{StaticResource nodeBorderStyle}">
+                <TextBlock Text="Rockhampton"></TextBlock>
+            </Border>
+            
+            <silver:Edge SourceNode="{Binding ElementName=perthNode}" DestinationNode="{Binding ElementName=sydneyNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=melbourneNode}" DestinationNode="{Binding ElementName=sydneyNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=adelaideNode}" DestinationNode="{Binding ElementName=sydneyNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=perthNode}" DestinationNode="{Binding ElementName=darwinNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=sydneyNode}" DestinationNode="{Binding ElementName=brisbaneNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=brisbaneNode}" DestinationNode="{Binding ElementName=rockhamptonNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=sydneyNode}" DestinationNode="{Binding ElementName=rockhamptonNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=adelaideNode}" DestinationNode="{Binding ElementName=melbourneNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=melbourneNode}" DestinationNode="{Binding ElementName=hobartNode}" IsDirected="True"/>
+            <silver:Edge SourceNode="{Binding ElementName=melbourneNode}" DestinationNode="{Binding ElementName=launcestonNode}" IsDirected="True"/>
+        </silver:SilverSpringCanvas>
+    </Grid>
+</UserControl>
