@@ -12,4 +12,4 @@ Credits & Mentions
 
 Example
 ==================
-See an example [here](http://phillp.github.com/silverspring/)
+See an example [here](http://phillp.github.com/SilverSpring/)
