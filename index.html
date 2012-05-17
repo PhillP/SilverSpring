@@ -80,18 +80,19 @@
 <p>This project includes:</p>
 
 <ul>
-<li> a force-directed layout algorithm in C#.  <a href="http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29">See Wikipedia page on force-based algorithms</a>
+<li> a force-directed layout algorithm in C#.  <a href="http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29">See Wikipedia page on force-based algorithms</a>.  The algorithm should produce a layout with minimal line crosses and fairly even spacing.
 </li>
-<li> a SilverLight control (SilverSpringCanvas) that uses the algorithm to layout child elements</li>
-</ul><h3>Credits &amp; Mentions</h3>
+<li> a SilverLight control (SilverSpringCanvas) that uses the algorithm to layout child elements.  Nodes in the graph can be any SilverLight control that can be added to a canvas.</li>
+</ul>
 
+<h3>Credits &amp; Mentions</h3>
 <ul>
 <li>The <a href="https://github.com/dhotson/springy">springy.js</a> javascript library by (<a href="https://github.com/dhotson" class="user-mention">@dhotson</a>) provided some inspiration for SilverSpring, particularly the idea of visualizing the graph during the layout calculation.</li>
 <li>The contents of a stackoverflow post helped to work out the required arrow drawing code.  <a href="http://stackoverflow.com/questions/1563285/how-to-draw-an-arrow-in-silverlight">See stackoverflow post.</a>
 </li>
 </ul><h3>Example</h3>
 
-<p>Press the 'Run' button below to see the algorithm and control in action.</p>
+<p>Press the 'Run' button below to see the algorithm and control in action.  This example visualizes the layout while the algorithm is procesing.  In practice, visualization can be delayed until the algorithm has calculated a final layout.</p>
           <div id="silverlightControlHost">
         <object data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">
 		  <param name="source" value="ClientBin/SilverSpring.Application.xap"/>
