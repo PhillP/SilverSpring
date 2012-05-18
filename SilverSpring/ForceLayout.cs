@@ -45,12 +45,12 @@ namespace SilverSpring
         /// <summary>
         /// A default damping applied to node velocity
         /// </summary>
-        private const double _defaultDamping = 0.3;
+        private const double _defaultDamping = 0.4;
 
         /// <summary>
         /// Default energy level at which the algorithm will stop
         /// </summary>
-        private const double _defaultStoppingKineticEnergyLevel = 0.0000001;
+        private const double _defaultStoppingKineticEnergyLevel = 0.000005;
 
         /// <summary>
         /// Default maximum iterations
@@ -65,27 +65,27 @@ namespace SilverSpring
         /// <summary>
         /// Default repulse constant value
         /// </summary>
-        private const double _defaultRepulseConstant = 0.003;
+        private const double _defaultRepulseConstant = 0.0005;
 
         /// <summary>
         /// Default spring constant value
         /// </summary>
-        private const double _defaultSpringConstant = 300;
+        private const double _defaultSpringConstant = 1000;
 
         /// <summary>
         /// Default spring amplifier
         /// </summary>
-        private const double _defaultSpringAmplifier = 1;
+        private const double _defaultSpringAmplifier = 2;
 
         /// <summary>
         /// Default spring stable distance
         /// </summary>
-        private const double _defaultSpringStableDistance = 650;
+        private const double _defaultSpringStableDistance = 300;
 
         /// <summary>
         /// Default spring multiplier cap
         /// </summary>
-        private const double _defaultSpringMultiplierCap = 0.5;
+        private const double _defaultSpringMultiplierCap = 0.7;
 
         /// <summary>
         /// X distance move size used by pre-solve
@@ -318,7 +318,7 @@ namespace SilverSpring
                     nodeData.Coordinates.X = nodeData.Coordinates.X + nodeData.Velocity.Dx;
                     nodeData.Coordinates.Y = nodeData.Coordinates.Y + nodeData.Velocity.Dy;
 
-                    totalKineticEnergy = totalKineticEnergy + Math.Abs(nodeData.Velocity.Dx) + Math.Pow(Math.Abs(nodeData.Velocity.Dy),2);
+                    totalKineticEnergy = totalKineticEnergy + Math.Pow((Math.Abs(nodeData.Velocity.Dx) + Math.Abs(nodeData.Velocity.Dy)) / 2.0,2);
                 }
 
                 double elapsedSeconds = DateTime.Now.Subtract(startTime).TotalSeconds;
@@ -407,10 +407,15 @@ namespace SilverSpring
             double repulseConstant = _defaultRepulseConstant;
             double dx = first.Coordinates.X - second.Coordinates.X;
             double dy = first.Coordinates.Y - second.Coordinates.Y;
-        
+            
             double distance = Math.Sqrt((Math.Pow(dx, 2) + Math.Pow(dy, 2)));
-        
-            double repulseMultiplier = repulseConstant / distance;
+
+            double repulseMultiplier = 0;
+
+            if (distance != 0)
+            {
+                repulseMultiplier = repulseConstant / distance;
+            }
 
             return new Vector(repulseMultiplier * dx, repulseMultiplier * dy);
         }
@@ -432,18 +437,24 @@ namespace SilverSpring
         
             double distance = Math.Sqrt((Math.Pow(dx, 2) + Math.Pow(dy, 2)));
 
-            double distanceFromStablePoint = Math.Abs(distance - springStableDistance);
-        
-            int directionModifier = (distance < springStableDistance)?1:-1;
+            double springMultiplier = 0;
 
-            double springMultiplier = (distanceFromStablePoint / springConstant);
+            double distanceFromStablePoint = Math.Abs(distance - springStableDistance);
+            int directionModifier = -1;
+
+            if (distance < springStableDistance)
+            {
+                directionModifier = 1;
+            }
+
+            springMultiplier = (distanceFromStablePoint / springConstant);
 
             if (springMultiplier > _defaultSpringMultiplierCap)
             {
                 springMultiplier = _defaultSpringMultiplierCap;
             }
             springMultiplier = springMultiplier * directionModifier * amplifier;
-
+            
             return new Vector(springMultiplier * dx, springMultiplier * dy);
         }
         

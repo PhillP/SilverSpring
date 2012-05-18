@@ -20,7 +20,7 @@ namespace SilverSpring.Controls
     public class SilverSpringCanvas : Canvas
     {
         private BackgroundWorker _worker = null;
-
+        private bool _messageShown = false;
         /// <summary>
         /// Run the layout algorithm on this control
         /// </summary>
@@ -33,7 +33,7 @@ namespace SilverSpring.Controls
 
             layout.MaximumScaledX = this.ActualWidth * .95;
             layout.MaximumScaledY = this.ActualHeight * .95;
-            layout.MaximumSeconds = 50;
+            layout.MaximumSeconds = 120;
            
             IEnumerable nodes = this.Children.Where(ch => !(ch is IEdge)).ToList();
             IEnumerable edges = this.Children.Where(ch => ch is IEdge).ToList();
@@ -79,8 +79,30 @@ namespace SilverSpring.Controls
 
                     if (nodeAsFrameworkElement != null)
                     {
-                        nodeAsFrameworkElement.SetValue(Canvas.LeftProperty, nodePoint.Coordinate.X);
-                        nodeAsFrameworkElement.SetValue(Canvas.TopProperty, nodePoint.Coordinate.Y);
+                        try
+                        {
+
+                            if (nodePoint.Coordinate.X >= 0 && nodePoint.Coordinate.X <= this.ActualWidth && !double.IsNaN(nodePoint.Coordinate.X))
+                            {
+                                nodeAsFrameworkElement.SetValue(Canvas.LeftProperty, nodePoint.Coordinate.X);
+                            }
+
+                            if (nodePoint.Coordinate.Y >= 0 && nodePoint.Coordinate.Y <= this.ActualHeight && !double.IsNaN(nodePoint.Coordinate.Y))
+                            {
+                                nodeAsFrameworkElement.SetValue(Canvas.TopProperty, nodePoint.Coordinate.Y);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!_messageShown)
+                            {
+                                _messageShown = true;
+                                MessageBox.Show(ex.Message);
+                                MessageBox.Show(nodePoint.Coordinate.X.ToString());
+                                MessageBox.Show(nodePoint.Coordinate.Y.ToString());
+                            }
+
+                        }
                     }
                 }
             }
