@@ -45,17 +45,22 @@ namespace SilverSpring
         /// <summary>
         /// A default damping applied to node velocity
         /// </summary>
-        private const double _defaultDamping = 0.4;
+        private const double _defaultDamping = 0.3;
 
         /// <summary>
         /// Default energy level at which the algorithm will stop
         /// </summary>
-        private const double _defaultStoppingKineticEnergyLevel = 0.000005;
+        private const double _defaultStoppingKineticEnergyLevel = 0.000000001;
 
         /// <summary>
         /// Default maximum iterations
         /// </summary>
         private const int _defaultMaximumIterations = 500000;
+
+        /// <summary>
+        /// Default minimum iterations
+        /// </summary>
+        private const int _defaultMinimumIterations = 50;
 
         /// <summary>
         /// Default maximum seconds
@@ -65,37 +70,37 @@ namespace SilverSpring
         /// <summary>
         /// Default repulse constant value
         /// </summary>
-        private const double _defaultRepulseConstant = 0.0005;
+        private const double _defaultRepulseConstant = 0.03;
 
         /// <summary>
         /// Default spring constant value
         /// </summary>
-        private const double _defaultSpringConstant = 1000;
+        private const double _defaultSpringConstant = 2000;
 
         /// <summary>
         /// Default spring amplifier
         /// </summary>
-        private const double _defaultSpringAmplifier = 2;
+        private const double _defaultSpringAmplifier = 10;
 
         /// <summary>
         /// Default spring stable distance
         /// </summary>
-        private const double _defaultSpringStableDistance = 300;
+        private const double _defaultSpringStableDistance = 200;
 
         /// <summary>
         /// Default spring multiplier cap
         /// </summary>
-        private const double _defaultSpringMultiplierCap = 0.7;
+        private const double _defaultSpringMultiplierCap = 3;
 
         /// <summary>
         /// X distance move size used by pre-solve
         /// </summary>
-        private const double _preSolveXStep = 5;
+        private const double _preSolveXStep = 15;
 
         /// <summary>
         /// Y distance move size used by pre-solve
         /// </summary>
-        private const double _preSolveYStep = 3;
+        private const double _preSolveYStep = 9;
 
         /// <summary>
         /// Maximum Y value assigned during pre-solve
@@ -105,7 +110,7 @@ namespace SilverSpring
         /// <summary>
         /// small X distance move size used by pre-solve
         /// </summary>
-        private const double _preSolveXStepSmall = 2;
+        private const double _preSolveXStepSmall = 5;
 
         /// <summary>
         /// Default maximum x to assign after node coordinate scaling
@@ -139,7 +144,7 @@ namespace SilverSpring
         /// <summary>
         /// The number of iterations between draws
         /// </summary>
-        private double? _iterationDrawMiliseconds = 150;
+        private double? _iterationDrawMiliseconds = 50;
 
         /// <summary>
         /// Reference to delegate used to get a key from a node
@@ -161,9 +166,30 @@ namespace SilverSpring
         /// </summary>
         private SetNodeCoordinates _setNodeCoordinatesDelegate;
 
+        /// <summary>
+        /// The level of energy in the system
+        /// </summary>
+        private double _energy = 0;
+
+        /// <summary>
+        /// The level of energy in the system as at the last iteration
+        /// </summary>
+        private double _lastEnergy = 0;
+
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the level of energy in the system
+        /// </summary>
+        public double Energy
+        {
+            get
+            {
+                return _energy;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the maximum seconds allowed for processing
@@ -290,6 +316,8 @@ namespace SilverSpring
 
             while (!finished)
             {
+                _lastEnergy = _energy;
+
                 timestep++;
                 double totalKineticEnergy = 0;
 
@@ -318,7 +346,10 @@ namespace SilverSpring
                     nodeData.Coordinates.X = nodeData.Coordinates.X + nodeData.Velocity.Dx;
                     nodeData.Coordinates.Y = nodeData.Coordinates.Y + nodeData.Velocity.Dy;
 
-                    totalKineticEnergy = totalKineticEnergy + Math.Pow((Math.Abs(nodeData.Velocity.Dx) + Math.Abs(nodeData.Velocity.Dy)) / 2.0,2);
+                    if ((Math.Abs(nodeData.Velocity.Dx) + Math.Abs(nodeData.Velocity.Dy)) > 0)
+                    {
+                        totalKineticEnergy = totalKineticEnergy + Math.Pow((Math.Abs(nodeData.Velocity.Dx) + Math.Abs(nodeData.Velocity.Dy)) / 2.0,2);
+                    }
                 }
 
                 double elapsedSeconds = DateTime.Now.Subtract(startTime).TotalSeconds;
@@ -327,18 +358,28 @@ namespace SilverSpring
 
                 if (elapsedMilisecondsSinceLastRender > _iterationDrawMiliseconds)
                 {
-                    SetNodeCoordinates(nodeLayoutDataByKey.Values);
-                   
+                    if (totalKineticEnergy > 0)
+                    {
+                        SetNodeCoordinates(nodeLayoutDataByKey.Values);
+                    }
                     lastRenderTime = DateTime.Now;
                 }
 
-                if (timestep >= maximumIterations || totalKineticEnergy < minKineticEnergy || elapsedSeconds > maxElapsedSeconds)
+                _energy = totalKineticEnergy;
+
+                if (_energy < _lastEnergy)
                 {
-                    finished = true;
+                    if (timestep >= maximumIterations || totalKineticEnergy < minKineticEnergy || elapsedSeconds > maxElapsedSeconds)
+                    {
+                        finished = true;
+                        if (totalKineticEnergy > 0)
+                        {
+                            SetNodeCoordinates(nodeLayoutDataByKey.Values);
+                        }
+                    }
                 }
             }
 
-            SetNodeCoordinates(nodeLayoutDataByKey.Values);
         }
 
         #region Private Methods
@@ -389,11 +430,38 @@ namespace SilverSpring
                     double x = ((nodeData.Coordinates.X - minX.Value) / xRange) * MaximumScaledX;
                     double y = ((nodeData.Coordinates.Y - minY.Value) / yRange) * MaximumScaledY;
 
+                    //x = nodeData.Coordinates.X;
+                    //y = nodeData.Coordinates.Y;
+
                     nodeCoordinateData.Add(new NodePoint() { Node = nodeData.Node, Coordinate = new Point(x, y) });
                 }
             }
 
-            _setNodeCoordinatesDelegate(nodeCoordinateData);
+            double minDist = double.MaxValue;
+            foreach (NodePoint np in nodeCoordinateData)
+            {
+                foreach (NodePoint np2 in nodeCoordinateData)
+                {
+                    if (np != np2)
+                    {
+                        double dx = np.Coordinate.X - np2.Coordinate.X;
+                        double dy = np.Coordinate.Y - np2.Coordinate.Y;
+
+                        double distance = Math.Sqrt((Math.Pow(dx, 2) + Math.Pow(dy, 2)));
+
+                        if (distance < minDist)
+                        {
+                            minDist = distance;
+                        }
+                    }
+                }
+            }
+
+            // avoid rendering invalid solutions
+            if (minDist > _defaultSpringStableDistance / 10.0)
+            {
+                _setNodeCoordinatesDelegate(nodeCoordinateData);
+            }
         }
 
         /// <summary>
@@ -412,7 +480,7 @@ namespace SilverSpring
 
             double repulseMultiplier = 0;
 
-            if (distance != 0)
+            if (!double.IsNaN(distance))
             {
                 repulseMultiplier = repulseConstant / distance;
             }
@@ -439,22 +507,24 @@ namespace SilverSpring
 
             double springMultiplier = 0;
 
-            double distanceFromStablePoint = Math.Abs(distance - springStableDistance);
-            int directionModifier = -1;
-
-            if (distance < springStableDistance)
+            if (!double.IsNaN(distance))
             {
-                directionModifier = 1;
-            }
+                double distanceFromStablePoint = Math.Abs(distance - springStableDistance);
+                int directionModifier = -1;
 
-            springMultiplier = (distanceFromStablePoint / springConstant);
+                if (distance < springStableDistance)
+                {
+                    directionModifier = 1;
+                }
 
-            if (springMultiplier > _defaultSpringMultiplierCap)
-            {
-                springMultiplier = _defaultSpringMultiplierCap;
+                springMultiplier = (distanceFromStablePoint / springConstant);
+
+                if (springMultiplier > _defaultSpringMultiplierCap)
+                {
+                    springMultiplier = _defaultSpringMultiplierCap;
+                }
+                springMultiplier = springMultiplier * directionModifier * amplifier;
             }
-            springMultiplier = springMultiplier * directionModifier * amplifier;
-            
             return new Vector(springMultiplier * dx, springMultiplier * dy);
         }
         
@@ -521,52 +591,6 @@ namespace SilverSpring
 
                 nodeData.Coordinates.X = currentX;
                 nodeData.Coordinates.Y = currentY;
-            }
-        }
-
-        /// <summary>
-        /// Scale coordinates within the solution
-        /// </summary>
-        private void ScaleSolution(Dictionary<object, NodeLayoutData> nodeLayoutDataByKey)
-        {
-            double? minX = 0;
-            double? maxX = 0;
-            double? minY = 0;
-            double? maxY = 0;
-
-            foreach (NodeLayoutData nodeData in nodeLayoutDataByKey.Values)
-            {
-                if (minX == null || minX > nodeData.Coordinates.X)
-                {
-                    minX = nodeData.Coordinates.X;
-                }
-
-                if (maxX == null || maxX < nodeData.Coordinates.X)
-                {
-                    maxX = nodeData.Coordinates.X;
-                }
-
-                if (minY == null || minY > nodeData.Coordinates.Y)
-                {
-                    minY = nodeData.Coordinates.Y;
-                }
-
-                if (maxY == null || maxY < nodeData.Coordinates.Y)
-                {
-                    maxY = nodeData.Coordinates.Y;
-                }
-            }
-
-            if (minX != null && maxX != null && minY != null && maxX != null)
-            {
-                double xRange = maxX.Value - minX.Value;
-                double yRange = maxY.Value - minY.Value;
-
-                foreach (NodeLayoutData nodeData in nodeLayoutDataByKey.Values)
-                {
-                    nodeData.Coordinates.X = ((nodeData.Coordinates.X - minX.Value) / xRange) * MaximumScaledX;
-                    nodeData.Coordinates.Y = ((nodeData.Coordinates.Y - minY.Value) / yRange) * MaximumScaledY;
-                }
             }
         }
 

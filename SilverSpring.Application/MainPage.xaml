@@ -29,7 +29,11 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Content="Run" Grid.Row="0" HorizontalAlignment="Left" Click="runClick"></Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left">
+            <Button Content="Run" Grid.Row="0" HorizontalAlignment="Left" Click="runClick"></Button>
+        </StackPanel>
+        
+        
         <silver:SilverSpringCanvas x:Name="silverSpringCanvas" Grid.Row="1" Margin="30" MaxWidth="450" MaxHeight="450">
             <Border x:Name="perthNode" Style="{StaticResource nodeBorderStyle}">
                 <TextBlock Text="Perth"></TextBlock>

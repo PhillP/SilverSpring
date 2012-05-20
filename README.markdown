@@ -3,7 +3,7 @@ SilverSpring
 This project includes:
 
 + a force-directed layout algorithm in C#. [See Wikipedia page](http://en.wikipedia.org/wiki/Force-based_algorithms_%28graph_drawing%29) on force-based algorithms
-+ a SilverLight control (SilverSpringCanvas) that uses the algorithm to layout child elements
++ a Silverlight control (SilverSpringCanvas) that uses the algorithm to layout child elements
 
 Credits & Mentions
 ==================

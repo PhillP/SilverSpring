@@ -21,44 +21,71 @@ namespace SilverSpring.Controls
     {
         private BackgroundWorker _worker = null;
         private bool _messageShown = false;
+        ForceLayout _layout = null;
+        private bool _isRunning = false;
+
+        private double _energy = 0;
+
+        /// <summary>
+        /// Gets or sets the level of energy in the system
+        /// </summary>
+        public double Energy
+        {
+            get
+            {
+                return _energy;
+            }
+        }
+
         /// <summary>
         /// Run the layout algorithm on this control
         /// </summary>
         public void RunLayoutAlgorithm()
         {
-            ForceLayout layout = new ForceLayout(GetKeyFromNode, 
-                                                 GetSourceNodeKeyFromEdge, 
-                                                 GetDestinationNodeKeyFromEdge, 
-                                                 SetNodeCoordinates);
-
-            layout.MaximumScaledX = this.ActualWidth * .95;
-            layout.MaximumScaledY = this.ActualHeight * .95;
-            layout.MaximumSeconds = 120;
-           
-            IEnumerable nodes = this.Children.Where(ch => !(ch is IEdge)).ToList();
-            IEnumerable edges = this.Children.Where(ch => ch is IEdge).ToList();
-
-            _worker = new BackgroundWorker();
-            _worker.WorkerReportsProgress = true;
-            _worker.DoWork += (w, data) =>
+            if (!_isRunning)
             {
-                // Run the layout algorithm
-                // every child that is not an edge is considered a node
-                layout.Layout(nodes,
-                              edges);
-            };
+                _isRunning = true;
+                _layout = new ForceLayout(GetKeyFromNode,
+                                          GetSourceNodeKeyFromEdge,
+                                          GetDestinationNodeKeyFromEdge,
+                                          SetNodeCoordinates);
 
-            _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
-            _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(_worker_RunWorkerCompleted);
-            _worker.RunWorkerAsync();
+                _layout.MaximumScaledX = this.ActualWidth * .95;
+                _layout.MaximumScaledY = this.ActualHeight * .95;
+                _layout.MaximumSeconds = 120;
+
+                IEnumerable nodes = this.Children.Where(ch => !(ch is IEdge)).ToList();
+                IEnumerable edges = this.Children.Where(ch => ch is IEdge).ToList();
+
+                _worker = new BackgroundWorker();
+                _worker.WorkerReportsProgress = true;
+                _worker.DoWork += (w, data) =>
+                {
+                    // Run the layout algorithm
+                    // every child that is not an edge is considered a node
+                    _layout.Layout(nodes,
+                                  edges);
+                };
+
+                _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
+                _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(_worker_RunWorkerCompleted);
+                _worker.RunWorkerAsync();
+            }
         }
 
         void _worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            _isRunning = false;
+
             if (e.Error != null)
             {
                 MessageBox.Show(e.Error.Message);
                 MessageBox.Show(e.Error.StackTrace);
+            }
+
+            if (_layout != null)
+            {
+                _energy = _layout.Energy;
             }
         }
 
@@ -69,6 +96,11 @@ namespace SilverSpring.Controls
         /// </summary>
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            if (_layout != null)
+            {
+                _energy = _layout.Energy;
+            }
+
             NodePointList nodeCoordinateData = e.UserState as NodePointList;
 
             if (nodeCoordinateData != null)
